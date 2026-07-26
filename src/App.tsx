@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n, { LANGUAGES, applyDir } from './i18n'
+import { toPng } from 'html-to-image'
 import { analyze, parseDnaFile, type AnalysisSummary } from './lib/dna'
 import { TraitCard } from './components/TraitCard'
+import { ShareCard } from './components/ShareCard'
 
 const CATEGORY_ORDER = ['taste', 'body', 'fitness', 'senses', 'mind', 'appearance', 'sleep']
 
@@ -36,7 +38,25 @@ export default function App() {
   const [summary, setSummary] = useState<AnalysisSummary | null>(null)
   const [status, setStatus] = useState<'idle' | 'reading' | 'error'>('idle')
   const [dragOver, setDragOver] = useState(false)
+  const [saving, setSaving] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const shareRef = useRef<HTMLDivElement>(null)
+
+  const saveImage = async () => {
+    if (!shareRef.current) return
+    setSaving(true)
+    try {
+      const dataUrl = await toPng(shareRef.current, { pixelRatio: 2, cacheBust: true })
+      const link = document.createElement('a')
+      link.download = 'genoscope-my-dna-traits.png'
+      link.href = dataUrl
+      link.click()
+    } catch {
+      /* ignore — capture can fail on some browsers */
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const run = useCallback((text: string) => {
     setStatus('reading')
@@ -116,12 +136,29 @@ export default function App() {
                 })}
               </p>
             </div>
-            <button
-              onClick={reset}
-              className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-violet-400/40 hover:text-[var(--color-ink)]"
-            >
-              {t('report.restart')}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={saveImage}
+                disabled={saving}
+                className="rounded-full bg-gradient-to-r from-violet-500 to-teal-400 px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.03] disabled:opacity-60"
+              >
+                {saving ? '…' : t('report.share')}
+              </button>
+              <button
+                onClick={reset}
+                className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-violet-400/40 hover:text-[var(--color-ink)]"
+              >
+                {t('report.restart')}
+              </button>
+            </div>
+          </div>
+
+          {/* Off-screen card used for PNG export */}
+          <div
+            aria-hidden
+            style={{ position: 'fixed', left: -99999, top: 0, pointerEvents: 'none' }}
+          >
+            <ShareCard ref={shareRef} matches={summary.matched} />
           </div>
 
           {CATEGORY_ORDER.map((cat) => {

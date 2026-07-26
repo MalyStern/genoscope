@@ -5,7 +5,10 @@
   "type": "module",
   "description": "Your DNA, decoded on your device. Turn your 23andMe / AncestryDNA raw data into a beautiful genetic-traits report — 100% in your browser, nothing uploaded.",
   "homepage": "https://malystern.github.io/genoscope/",
-  "repository": { "type": "git", "url": "https://github.com/MalyStern/genoscope" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MalyStern/genoscope"
+  },
   "license": "MIT",
   "keywords": [
     "dna",
@@ -25,6 +28,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "html-to-image": "^1.11.13",
     "i18next": "^26.3.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

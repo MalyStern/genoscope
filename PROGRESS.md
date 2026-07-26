@@ -18,11 +18,17 @@
 - [x] Build passes; verified full flow in browser (34 variants, 16 traits render)
 - [x] README (hero, badges, why, features, install), LICENSE (MIT), package.json meta
 - [x] GitHub Actions deploy-to-Pages workflow (.github/workflows/deploy.yml)
-- [ ] git init, commit, create repo on MalyStern, push, enable Pages (Actions source)
-- [ ] Verify live site loads on Pages
-- [ ] Share: download report card as PNG (html-to-image) — viral engine, NEXT
-- [ ] Localize trait content to Hebrew; add more traits; add screenshots to README
-- [ ] Launch prep: repo topics/description via gh, Show HN + r/LocalLLaMA + r/23andme copy
+- [x] git init, commit, create repo on MalyStern, push, enable Pages (Actions source)
+- [x] Verify live site loads on Pages — LIVE at https://malystern.github.io/genoscope/
+- [x] Share: download report card as PNG (html-to-image) — viral engine (ShareCard.tsx)
+- [x] Verified full flow on production build: 16 traits render, EN/HE+RTL works, share card + button present
+- [ ] Localize trait content to Hebrew; add more traits (target ~25); add screenshots to README
+- [ ] Launch prep: Show HN + r/LocalLLaMA + r/23andme + r/privacy copy
+
+## SHIPPED ✅
+Repo: https://github.com/MalyStern/genoscope · Live: https://malystern.github.io/genoscope/
+Core goal met: zero-cost client-side app built, pushed to user's GitHub, live on Pages.
+Remaining = polish + growth (more traits, HE trait content, README screenshot, launch posts).
 
 ## Key decisions / notes
 - Traits framed as "for fun / educational, not medical advice." Prominent disclaimer.
