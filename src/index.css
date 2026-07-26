@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  --color-ink: #e8e6f0;
+  --color-ink-dim: #a5a0b8;
+  --color-base: #0a0912;
+  --color-surface: #141221;
+  --color-surface-2: #1c1930;
+  --color-line: #2a2740;
+  --color-violet: #a855f7;
+  --color-teal: #2dd4bf;
+  --color-amber: #fbbf24;
+  --color-rose: #fb7185;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ambient genomic gradient backdrop */
+body {
+  min-height: 100svh;
+  background:
+    radial-gradient(60rem 60rem at 15% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
+    radial-gradient(50rem 50rem at 95% 0%, rgba(45, 212, 191, 0.12), transparent 55%),
+    radial-gradient(70rem 70rem at 50% 120%, rgba(168, 85, 247, 0.1), transparent 60%),
+    var(--color-base);
+  background-attachment: fixed;
+}
+
+/* Logical-property friendly: layout mirrors automatically under dir="rtl" */
+[dir='rtl'] .flip-rtl {
+  transform: scaleX(-1);
+}
+
+::selection {
+  background: rgba(168, 85, 247, 0.35);
+  color: #fff;
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float-in {
+  animation: float-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-in {
+    animation: none;
+  }
+}

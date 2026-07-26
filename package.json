@@ -1,0 +1,44 @@
+{
+  "name": "genoscope",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Your DNA, decoded on your device. Turn your 23andMe / AncestryDNA raw data into a beautiful genetic-traits report — 100% in your browser, nothing uploaded.",
+  "homepage": "https://malystern.github.io/genoscope/",
+  "repository": { "type": "git", "url": "https://github.com/MalyStern/genoscope" },
+  "license": "MIT",
+  "keywords": [
+    "dna",
+    "genetics",
+    "23andme",
+    "ancestrydna",
+    "snp",
+    "privacy",
+    "local-first",
+    "bioinformatics",
+    "react"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "i18next": "^26.3.6",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^17.0.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "oxlint": "^1.71.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  }
+}
