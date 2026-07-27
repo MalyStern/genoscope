@@ -96,6 +96,23 @@ Two easy ways to help, both very welcome:
 - **Add a trait.** It's a single object in [`src/data/traits.ts`](src/data/traits.ts): a gene, an rsID, a genotype→result mapping, and a SNPedia link. Please avoid disease/medical markers and prefer non-palindromic SNPs (alleles that aren't A/T or C/G) so strand direction stays unambiguous.
 - **Improve a translation.** All UI strings live in [`src/i18n.ts`](src/i18n.ts). The non-English strings were a first pass and would benefit from native speakers. Trait descriptions are English-only for now, so translating those is a great contribution too.
 
+## FAQ
+
+**Can I read my 23andMe raw data without uploading it anywhere?**
+Yes. Genoscope reads your raw DNA file entirely in your browser. Nothing is uploaded — open your Network tab and check, or turn off Wi-Fi first.
+
+**What can I do with my 23andMe / AncestryDNA raw data after exporting it?**
+Drop the raw `.txt` into Genoscope to see genetic traits (caffeine metabolism, lactose tolerance, muscle type, and more), each linked to its SNPedia source.
+
+**Is there a free, private alternative to uploading my DNA to a cloud tool?**
+Genoscope is that alternative: free, open source (MIT), and 100% local. Your genome never leaves your device.
+
+**Does Genoscope work on Mac, Windows, and phones?**
+Yes — it runs in any modern browser, on any operating system.
+
+**Is it safe?**
+It has no server and no account. It cannot leak your DNA because it never transmits it. The code is open for anyone to inspect.
+
 ## Disclaimer
 
 Genoscope is a hobby project for curiosity and education. It is not a medical device and gives no medical, diagnostic, or health advice. Genetics is complicated and a single marker rarely tells the whole story. For anything about your health, talk to a qualified professional. Trait interpretations are simplified and can be wrong for your particular ancestry.
