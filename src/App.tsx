@@ -1,12 +1,13 @@
 import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import i18n, { LANGUAGES, applyDir } from './i18n'
+import { LANGUAGES, setLanguage } from './i18n'
 import { toPng } from 'html-to-image'
 import { analyze, parseDnaFile, type AnalysisSummary } from './lib/dna'
 import { TraitCard } from './components/TraitCard'
 import { ShareCard } from './components/ShareCard'
 
 const CATEGORY_ORDER = ['taste', 'body', 'fitness', 'senses', 'mind', 'appearance', 'sleep']
+const MAX_FILE_BYTES = 80 * 1024 * 1024 // reject absurdly large files before we read them
 
 function HelixMark({ className = '' }: { className?: string }) {
   return (
@@ -25,8 +26,8 @@ function HelixMark({ className = '' }: { className?: string }) {
       />
       <defs>
         <linearGradient id="g" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#a855f7" />
-          <stop offset="1" stopColor="#2dd4bf" />
+          <stop stopColor="#bef264" />
+          <stop offset="1" stopColor="#65a30d" />
         </linearGradient>
       </defs>
     </svg>
@@ -34,25 +35,31 @@ function HelixMark({ className = '' }: { className?: string }) {
 }
 
 export default function App() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [summary, setSummary] = useState<AnalysisSummary | null>(null)
   const [status, setStatus] = useState<'idle' | 'reading' | 'error'>('idle')
   const [dragOver, setDragOver] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [shareError, setShareError] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const shareRef = useRef<HTMLDivElement>(null)
 
   const saveImage = async () => {
-    if (!shareRef.current) return
+    const node = shareRef.current
+    if (!node) return
     setSaving(true)
+    setShareError(false)
     try {
-      const dataUrl = await toPng(shareRef.current, { pixelRatio: 2, cacheBust: true })
+      // html-to-image's first pass can render blank in some engines; warm up, then keep the second.
+      await toPng(node, { pixelRatio: 2, cacheBust: true })
+      const dataUrl = await toPng(node, { pixelRatio: 2, cacheBust: true })
       const link = document.createElement('a')
       link.download = 'genoscope-my-dna-traits.png'
       link.href = dataUrl
       link.click()
     } catch {
-      /* ignore — capture can fail on some browsers */
+      setShareError(true)
+      window.setTimeout(() => setShareError(false), 4000)
     } finally {
       setSaving(false)
     }
@@ -75,6 +82,10 @@ export default function App() {
   const onFiles = (files: FileList | null) => {
     const file = files?.[0]
     if (!file) return
+    if (file.size > MAX_FILE_BYTES) {
+      setStatus('error')
+      return
+    }
     file.text().then(run).catch(() => setStatus('error'))
   }
 
@@ -91,10 +102,7 @@ export default function App() {
     if (inputRef.current) inputRef.current.value = ''
   }
 
-  const changeLang = (code: string) => {
-    i18n.changeLanguage(code)
-    applyDir(code)
-  }
+  const hasTraits = !!summary && summary.matched.length > 0
 
   return (
     <div className="mx-auto flex min-h-svh max-w-5xl flex-col px-5 pb-16">
@@ -102,23 +110,20 @@ export default function App() {
       <header className="flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
           <HelixMark className="h-7 w-7" />
-          <span className="text-lg font-semibold tracking-tight">{t('appName')}</span>
+          <span className="font-mono text-lg font-semibold tracking-tight">{t('appName')}</span>
         </div>
-        <div className="flex items-center gap-1 rounded-full border border-[var(--color-line)] bg-[var(--color-surface)]/60 p-0.5 text-sm">
+        <select
+          aria-label="Language"
+          value={i18n.language}
+          onChange={(e) => setLanguage(e.target.value)}
+          className="rounded-full border border-[var(--color-line)] bg-[var(--color-surface)] px-3 py-1.5 text-sm text-[var(--color-ink)] outline-none hover:border-lime-400/40 focus-visible:border-lime-400/60"
+        >
           {LANGUAGES.map((l) => (
-            <button
-              key={l.code}
-              onClick={() => changeLang(l.code)}
-              className={`rounded-full px-3 py-1 transition-colors ${
-                i18n.language === l.code
-                  ? 'bg-[var(--color-surface-2)] text-[var(--color-ink)]'
-                  : 'text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]'
-              }`}
-            >
+            <option key={l.code} value={l.code}>
               {l.label}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </header>
 
       {summary ? (
@@ -137,48 +142,63 @@ export default function App() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={saveImage}
-                disabled={saving}
-                className="rounded-full bg-gradient-to-r from-violet-500 to-teal-400 px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.03] disabled:opacity-60"
-              >
-                {saving ? '…' : t('report.share')}
-              </button>
+              {hasTraits && (
+                <button
+                  onClick={saveImage}
+                  disabled={saving}
+                  className="rounded-full bg-lime-400 hover:bg-lime-300 px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.03] disabled:opacity-60"
+                >
+                  {saving ? '…' : t('report.share')}
+                </button>
+              )}
               <button
                 onClick={reset}
-                className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-violet-400/40 hover:text-[var(--color-ink)]"
+                className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-lime-400/40 hover:text-[var(--color-ink)]"
               >
                 {t('report.restart')}
               </button>
             </div>
           </div>
 
-          {/* Off-screen card used for PNG export */}
-          <div
-            aria-hidden
-            style={{ position: 'fixed', left: -99999, top: 0, pointerEvents: 'none' }}
-          >
-            <ShareCard ref={shareRef} matches={summary.matched} />
-          </div>
+          {shareError && (
+            <p role="alert" className="mb-4 text-center text-sm text-rose-300">
+              {t('report.shareError')}
+            </p>
+          )}
 
-          {CATEGORY_ORDER.map((cat) => {
-            const items = summary.matched.filter((m) => m.trait.category === cat)
-            if (items.length === 0) return null
-            return (
-              <section key={cat} className="mt-8">
-                <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-ink-dim)]">
-                  {t(`categories.${cat}`)}
-                </h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {items.map((m, i) => (
-                    <TraitCard key={m.trait.id} match={m} index={i} />
-                  ))}
-                </div>
-              </section>
-            )
-          })}
+          {hasTraits ? (
+            <>
+              {/* Off-screen card used for PNG export */}
+              <div aria-hidden style={{ position: 'fixed', left: -99999, top: 0, pointerEvents: 'none' }}>
+                <ShareCard ref={shareRef} matches={summary.matched} />
+              </div>
 
-          <p className="mx-auto mt-12 max-w-2xl text-center text-xs leading-relaxed text-[var(--color-ink-dim)]/70">
+              {CATEGORY_ORDER.map((cat) => {
+                const items = summary.matched.filter((m) => m.trait.category === cat)
+                if (items.length === 0) return null
+                return (
+                  <section key={cat} className="mt-8">
+                    <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-ink-dim)]">
+                      {t(`categories.${cat}`)}
+                    </h2>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {items.map((m, i) => (
+                        <TraitCard key={m.trait.id} match={m} index={i} />
+                      ))}
+                    </div>
+                  </section>
+                )
+              })}
+            </>
+          ) : (
+            <div className="animate-float-in mx-auto max-w-lg rounded-2xl border border-[var(--color-line)] bg-[var(--color-surface)]/50 p-8 text-center">
+              <HelixMark className="mx-auto h-10 w-10" />
+              <p className="mt-4 text-[var(--color-ink)]">{t('report.emptyTitle')}</p>
+              <p className="mt-2 text-sm text-[var(--color-ink-dim)]">{t('report.emptyBody')}</p>
+            </div>
+          )}
+
+          <p className="mx-auto mt-12 max-w-2xl text-center text-xs leading-relaxed text-[var(--color-ink-dim)]/80">
             {t('disclaimer')}
           </p>
         </main>
@@ -215,7 +235,7 @@ export default function App() {
             }}
             className={`animate-float-in mt-8 w-full max-w-xl rounded-3xl border-2 border-dashed p-8 transition-colors ${
               dragOver
-                ? 'border-violet-400/70 bg-violet-500/5'
+                ? 'border-lime-400/70 bg-lime-400/5'
                 : 'border-[var(--color-line)] bg-[var(--color-surface)]/40'
             }`}
           >
@@ -231,14 +251,14 @@ export default function App() {
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => inputRef.current?.click()}
-                    className="rounded-full bg-gradient-to-r from-violet-500 to-teal-400 px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-[1.03]"
+                    className="rounded-full bg-lime-400 hover:bg-lime-300 px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-[1.03]"
                   >
                     {t('upload.browse')}
                   </button>
                   <span className="text-sm text-[var(--color-ink-dim)]">{t('upload.or')}</span>
                   <button
                     onClick={loadSample}
-                    className="rounded-full border border-[var(--color-line)] px-5 py-2.5 text-sm transition-colors hover:border-violet-400/40"
+                    className="rounded-full border border-[var(--color-line)] px-5 py-2.5 text-sm transition-colors hover:border-lime-400/40"
                   >
                     {t('upload.sample')}
                   </button>
@@ -251,20 +271,22 @@ export default function App() {
                   onChange={(e) => onFiles(e.target.files)}
                 />
                 {status === 'error' && (
-                  <p className="mt-4 text-sm text-rose-300">{t('error.parse')}</p>
+                  <p role="alert" className="mt-4 text-sm text-rose-300">
+                    {t('error.parse')}
+                  </p>
                 )}
               </>
             )}
           </div>
 
-          <p className="animate-float-in mt-4 max-w-md text-xs text-[var(--color-ink-dim)]/70">
+          <p className="animate-float-in mt-4 max-w-md text-xs text-[var(--color-ink-dim)]/80">
             {t('upload.formats')}
           </p>
         </main>
       )}
 
       {/* Footer */}
-      <footer className="mt-10 flex flex-col items-center gap-1 text-center text-xs text-[var(--color-ink-dim)]/70">
+      <footer className="mt-10 flex flex-col items-center gap-1 text-center text-xs text-[var(--color-ink-dim)]/80">
         <p>{t('footer.madeWith')}</p>
         <a
           href="https://github.com/MalyStern/genoscope"
@@ -274,6 +296,7 @@ export default function App() {
         >
           {t('footer.openSource')}
         </a>
+        <p className="mt-1 max-w-md text-[var(--color-ink-dim)]/60">{t('footer.notAffiliated')}</p>
       </footer>
     </div>
   )

@@ -7,9 +7,14 @@ export type Genome = Map<string, string>
 
 const COMPLEMENT: Record<string, string> = { A: 'T', T: 'A', C: 'G', G: 'C' }
 
-/** Uppercase, keep only ACGT, and sort the two alleles so order never matters. */
+/**
+ * Uppercase, keep only ACGT, and sort the two alleles so order never matters.
+ * A single allele (haploid X/Y/MT calls) is doubled so it can still match.
+ * Non-calls ("0", "--"), indels ("DD"/"II"/"-") and other junk collapse to null.
+ */
 function normalizeGenotype(raw: string): string | null {
   const g = raw.trim().toUpperCase().replace(/[^ACGT]/g, '')
+  if (g.length === 1) return g + g
   if (g.length !== 2) return null
   return [g[0], g[1]].sort().join('')
 }

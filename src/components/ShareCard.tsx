@@ -1,4 +1,5 @@
 import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { TraitMatch } from '../lib/dna'
 import type { Tone } from '../data/traits'
 
@@ -17,6 +18,7 @@ interface Props {
 
 /** The shareable summary card that gets exported to PNG. Rendered off-screen. */
 export const ShareCard = forwardRef<HTMLDivElement, Props>(function ShareCard({ matches }, ref) {
+  const { t } = useTranslation()
   return (
     <div
       ref={ref}
@@ -24,36 +26,34 @@ export const ShareCard = forwardRef<HTMLDivElement, Props>(function ShareCard({ 
         width: 640,
         boxSizing: 'border-box',
         padding: 36,
-        fontFamily: "'Inter', system-ui, sans-serif",
+        fontFamily: "system-ui, 'Segoe UI', Roboto, sans-serif",
         color: '#e8e6f0',
         background:
-          'radial-gradient(600px 400px at 12% -10%, rgba(168,85,247,0.35), transparent 60%),' +
-          'radial-gradient(500px 400px at 100% 0%, rgba(45,212,191,0.25), transparent 55%),' +
-          '#0a0912',
+          'radial-gradient(560px 380px at 85% -10%, rgba(163,230,53,0.14), transparent 60%),' + '#0a0912',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22 }}>
         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
           <path
             d="M7 3c0 5 10 5 10 10S7 18 7 21M17 3c0 5-10 5-10 10s10 5 10 8"
-            stroke="#a855f7"
+            stroke="#a3e635"
             strokeWidth="1.6"
             strokeLinecap="round"
           />
-          <path d="M8.5 6h7M9 9h6M9 15h6M8.5 18h7" stroke="#2dd4bf" strokeWidth="1.3" strokeLinecap="round" />
+          <path d="M8.5 6h7M9 9h6M9 15h6M8.5 18h7" stroke="#a3e635" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
         <div>
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>
-            My DNA traits
+            {t('report.title')}
           </div>
           <div style={{ fontSize: 13, color: '#a5a0b8' }}>
-            decoded privately with Genoscope
+            {t('appName')} · {t('badges.private')}
           </div>
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        {matches.slice(0, 16).map((m) => (
+        {matches.slice(0, 18).map((m) => (
           <div
             key={m.trait.id}
             style={{
@@ -108,7 +108,7 @@ export const ShareCard = forwardRef<HTMLDivElement, Props>(function ShareCard({ 
           color: '#a5a0b8',
         }}
       >
-        <span>🔒 My DNA never left my device</span>
+        <span>{t('footer.madeWith')}</span>
         <span style={{ fontFamily: 'monospace' }}>malystern.github.io/genoscope</span>
       </div>
     </div>
