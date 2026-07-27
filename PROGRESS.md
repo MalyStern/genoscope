@@ -25,10 +25,33 @@
 - [ ] Localize trait content to Hebrew; add more traits (target ~25); add screenshots to README
 - [ ] Launch prep: Show HN + r/LocalLLaMA + r/23andme + r/privacy copy
 
-## SHIPPED ✅
+## SHIPPED ✅ + MATURED
 Repo: https://github.com/MalyStern/genoscope · Live: https://malystern.github.io/genoscope/
-Core goal met: zero-cost client-side app built, pushed to user's GitHub, live on Pages.
-Remaining = polish + growth (more traits, HE trait content, README screenshot, launch posts).
+
+Done in maturity pass:
+- 22 strand-safe traits (removed palindromic rs713598/rs11803731; added FUT2, OR5A1,
+  KITLG, OXTR, BDNF, ADH1B, ADORA2A). Verified against SNPedia.
+- 12 languages w/ auto-detect + persistence + RTL (en, es, pt, fr, de, zh, hi, ja, ru,
+  he, ar, fa). Language <select> dropdown. UI translated; trait CONTENT still English.
+- QA fixes: strand-ambiguity (critical) resolved by dropping palindromic SNPs; bare-CR
+  line endings; haploid single-allele; dup rsID first-wins; file-size guard; empty-result
+  state; share warm-up + error surfaced.
+- De-AI redesign: dropped violet/teal gradient → single lime accent + faint lab grid,
+  mono wordmark, system fonts (removed unused Inter). Human/specific README + hero copy.
+- Legal: PRIVACY.md; non-affiliation notice in footer + README; strengthened disclaimer.
+- LAUNCH.md: ready-to-post Show HN / Reddit / PH / X copy (user posts; I do NOT auto-post).
+- Verified live: 22 cards, 12 langs, Arabic RTL, no console errors.
+
+## NEXT (autonomous loop, low intensity)
+- Trait CONTENT localization (names/labels/descs) — currently English only; big win for HE/others.
+- More traits toward ~30; rarity ("X% of people") per trait; single-trait share cards.
+- Web Worker for parsing large (20MB+) files off main thread (M2).
+- Record demo GIF (drag file → traits, Network tab empty) for README + launch.
+- a11y polish (emoji aria-labels, contrast on faint text, live region on result).
+- Native-review the machine-translated locales (zh/hi/ja/ar/fa) — invite via CONTRIBUTING.
+- Broader mandate from user: keep shipping MORE products/features for AI users (2 audiences:
+  developers + non-coders), each branded + QA'd + legal-checked + published. Genoscope is
+  product #1. Marketing = PREPARE materials; user publishes (accounts are theirs).
 
 ## Key decisions / notes
 - Traits framed as "for fun / educational, not medical advice." Prominent disclaimer.
