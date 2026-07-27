@@ -1,19 +1,20 @@
 import { useTranslation } from 'react-i18next'
 import type { TraitMatch } from '../lib/dna'
 import type { Tone } from '../data/traits'
+import { localizeOutcome, localizeTraitName } from '../data/traitI18n'
 
 const TONE: Record<Tone, { border: string; label: string; chip: string; glow: string }> = {
   violet: {
-    border: 'border-violet-400/25 hover:border-violet-400/50',
-    label: 'text-violet-300',
-    chip: 'bg-violet-500/15 text-violet-200',
-    glow: 'before:from-violet-500/20',
+    border: 'border-sky-400/25 hover:border-sky-400/50',
+    label: 'text-sky-300',
+    chip: 'bg-sky-500/15 text-sky-200',
+    glow: 'before:from-sky-500/20',
   },
   teal: {
-    border: 'border-teal-400/25 hover:border-teal-400/50',
-    label: 'text-teal-300',
-    chip: 'bg-teal-500/15 text-teal-200',
-    glow: 'before:from-teal-500/20',
+    border: 'border-emerald-400/25 hover:border-emerald-400/50',
+    label: 'text-emerald-300',
+    chip: 'bg-emerald-500/15 text-emerald-200',
+    glow: 'before:from-emerald-500/20',
   },
   amber: {
     border: 'border-amber-400/25 hover:border-amber-400/50',
@@ -30,9 +31,11 @@ const TONE: Record<Tone, { border: string; label: string; chip: string; glow: st
 }
 
 export function TraitCard({ match, index }: { match: TraitMatch; index: number }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { trait, genotype, outcome } = match
   const tone = TONE[outcome.tone]
+  const name = localizeTraitName(trait, i18n.language)
+  const { label, desc } = localizeOutcome(trait, outcome, i18n.language)
 
   return (
     <article
@@ -46,13 +49,9 @@ export function TraitCard({ match, index }: { match: TraitMatch; index: number }
         </span>
       </div>
 
-      <h3 className="relative mt-3 text-sm font-medium text-[var(--color-ink-dim)]">
-        {trait.name}
-      </h3>
-      <p className={`relative mt-0.5 text-xl font-semibold ${tone.label}`}>{outcome.label}</p>
-      <p className="relative mt-2 text-sm leading-relaxed text-[var(--color-ink-dim)]">
-        {outcome.desc}
-      </p>
+      <h3 className="relative mt-3 text-sm font-medium text-[var(--color-ink-dim)]">{name}</h3>
+      <p className={`relative mt-0.5 text-xl font-semibold ${tone.label}`}>{label}</p>
+      <p className="relative mt-2 text-sm leading-relaxed text-[var(--color-ink-dim)]">{desc}</p>
 
       <div className="relative mt-4 flex items-center justify-between border-t border-[var(--color-line)] pt-3 text-[11px] text-[var(--color-ink-dim)]/70">
         <span className="font-mono">

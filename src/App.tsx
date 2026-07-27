@@ -26,11 +26,29 @@ function HelixMark({ className = '' }: { className?: string }) {
       />
       <defs>
         <linearGradient id="g" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#bef264" />
-          <stop offset="1" stopColor="#65a30d" />
+          <stop stopColor="#edb24a" />
+          <stop offset="1" stopColor="#46c6c0" />
         </linearGradient>
       </defs>
     </svg>
+  )
+}
+
+const SEQ = 'ACGTTAGCACGTTGCAATCGGATCCGTAACGTAGCTTAGCCGATACGGTTACAGATCAGTCCGTAAGC'
+
+/** Streaming base-pair readout — the app's signature "sequencer" texture. */
+function ReadoutBand() {
+  const chars = (SEQ + SEQ).split('')
+  return (
+    <div className="readout" aria-hidden="true">
+      <div className="readout__bases">
+        {chars.map((c, i) => (
+          <span key={i} className={`b-${c.toLowerCase()}`}>
+            {c}
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -110,13 +128,16 @@ export default function App() {
       <header className="flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
           <HelixMark className="h-7 w-7" />
-          <span className="font-mono text-lg font-semibold tracking-tight">{t('appName')}</span>
+          <span className="font-mono text-lg font-semibold tracking-tight">
+            {t('appName')}
+            <span className="readout__cursor ms-0.5" />
+          </span>
         </div>
         <select
           aria-label="Language"
           value={i18n.language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="rounded-full border border-[var(--color-line)] bg-[var(--color-surface)] px-3 py-1.5 text-sm text-[var(--color-ink)] outline-none hover:border-lime-400/40 focus-visible:border-lime-400/60"
+          className="rounded-full border border-[var(--color-line)] bg-[var(--color-surface)] px-3 py-1.5 text-sm text-[var(--color-ink)] outline-none hover:border-amber-400/40 focus-visible:border-amber-400/60"
         >
           {LANGUAGES.map((l) => (
             <option key={l.code} value={l.code}>
@@ -146,14 +167,14 @@ export default function App() {
                 <button
                   onClick={saveImage}
                   disabled={saving}
-                  className="rounded-full bg-lime-400 hover:bg-lime-300 px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.03] disabled:opacity-60"
+                  className="rounded-full bg-amber-400 hover:bg-amber-300 px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.03] disabled:opacity-60"
                 >
                   {saving ? '…' : t('report.share')}
                 </button>
               )}
               <button
                 onClick={reset}
-                className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-lime-400/40 hover:text-[var(--color-ink)]"
+                className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm text-[var(--color-ink-dim)] transition-colors hover:border-amber-400/40 hover:text-[var(--color-ink)]"
               >
                 {t('report.restart')}
               </button>
@@ -219,7 +240,13 @@ export default function App() {
           <h1 className="animate-float-in max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
             {t('tagline')}
           </h1>
-          <p className="animate-float-in mt-4 max-w-xl text-[var(--color-ink-dim)]">{t('hero.sub')}</p>
+          <p className="animate-float-in mt-4 max-w-xl font-serif text-lg leading-relaxed text-[var(--color-ink-dim)]">
+            {t('hero.sub')}
+          </p>
+
+          <div className="animate-float-in -mx-5 mt-8 w-screen max-w-[100vw] self-center sm:mx-0 sm:w-full">
+            <ReadoutBand />
+          </div>
 
           {/* Dropzone */}
           <div
@@ -235,7 +262,7 @@ export default function App() {
             }}
             className={`animate-float-in mt-8 w-full max-w-xl rounded-3xl border-2 border-dashed p-8 transition-colors ${
               dragOver
-                ? 'border-lime-400/70 bg-lime-400/5'
+                ? 'border-amber-400/70 bg-amber-400/5'
                 : 'border-[var(--color-line)] bg-[var(--color-surface)]/40'
             }`}
           >
@@ -251,14 +278,14 @@ export default function App() {
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => inputRef.current?.click()}
-                    className="rounded-full bg-lime-400 hover:bg-lime-300 px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-[1.03]"
+                    className="rounded-full bg-amber-400 hover:bg-amber-300 px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-[1.03]"
                   >
                     {t('upload.browse')}
                   </button>
                   <span className="text-sm text-[var(--color-ink-dim)]">{t('upload.or')}</span>
                   <button
                     onClick={loadSample}
-                    className="rounded-full border border-[var(--color-line)] px-5 py-2.5 text-sm transition-colors hover:border-lime-400/40"
+                    className="rounded-full border border-[var(--color-line)] px-5 py-2.5 text-sm transition-colors hover:border-amber-400/40"
                   >
                     {t('upload.sample')}
                   </button>
