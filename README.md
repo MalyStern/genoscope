@@ -21,11 +21,11 @@ Upload your raw **23andMe** or **AncestryDNA** file and see the traits hiding in
 
 ## Why this exists
 
-In 2025, 23andMe filed for bankruptcy and roughly 15 million people were suddenly told to delete their genetic data before it could be sold to a buyer. If you exported your raw file first, you now have a `.txt` sitting in your Downloads folder and nowhere safe to open it.
+In 2025, 23andMe filed for Chapter 11 bankruptcy and its assets were sold (to the TTAM Research Institute, completed July 2025). Regulators urged customers to *consider* deleting their data, and the episode showed how genetic data can become part of a corporate transaction. If you exported your raw file first, you now have a `.txt` in your Downloads folder and few private ways to explore it.
 
-Every other "read your raw DNA" tool asks you to upload that file to their cloud. That is the one thing you should never do with your genome. So Genoscope does not have a cloud. The whole app is a static page: you pick your file, it gets read in your browser, and the report appears. Nothing is sent anywhere.
+Many DNA tools ask you to upload that file to their cloud. Genoscope takes the opposite, deliberately minimal approach: a small, auditable, open-source traits viewer that reads the file **locally in your browser**. There is no cloud — the app is a static page, so your DNA is read on your device and the report appears there. It is never transmitted.
 
-Don't take my word for it. Open your browser's DevTools, go to the Network tab, and drop your file in. You'll see zero requests. You can also turn off Wi-Fi first and it works exactly the same.
+Don't take my word for it. Open your browser's DevTools → Network and drop your file in: no request carries your DNA. (The page itself, and the optional sample file, are served normally from GitHub Pages.) Once loaded, analysis keeps working with the internet off.
 
 ## What you get
 

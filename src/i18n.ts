@@ -36,6 +36,7 @@ type Dict = {
     restart: string
     share: string
     shareError?: string
+    shareNote?: string
     emptyTitle?: string
     emptyBody?: string
   }
@@ -49,6 +50,7 @@ type Dict = {
     sleep: string
   }
   error: { parse: string }
+  assocNote?: string
   disclaimer: string
   footer: { madeWith: string; openSource: string; notAffiliated: string }
 }
@@ -73,6 +75,7 @@ const en: Dict = {
     stats: '{{variants}} variants read · {{matched}} traits decoded',
     restart: 'Analyze another file',
     share: 'Save as image',
+    shareNote: 'The image shows trait results, not your DNA file. Share only what you are comfortable making public.',
     shareError: 'Could not create the image. Please try again.',
     emptyTitle: 'We read your file, but none of our trait markers were in it.',
     emptyBody:
@@ -91,6 +94,7 @@ const en: Dict = {
     parse:
       "We couldn't find any DNA data in that file. Make sure it's a raw export (.txt or .csv) from 23andMe, AncestryDNA or MyHeritage.",
   },
+  assocNote: 'A genetic association — not a verdict. Genes are only part of the story.',
   disclaimer:
     'Genoscope is for curiosity and education only. It is not a medical device and does not provide medical, diagnostic, or health advice. Genetics is complex — single markers rarely tell the whole story.',
   footer: {
@@ -473,6 +477,7 @@ const he: Dict = {
     stats: '{{variants}} וריאנטים נקראו · {{matched}} תכונות פוענחו',
     restart: 'ניתוח קובץ אחר',
     share: 'שמירה כתמונה',
+    shareNote: 'התמונה מציגה תוצאות תכונות, לא את קובץ ה‑DNA. שתפו רק את מה שנוח לכם לפרסם.',
   },
   categories: {
     taste: 'טעם',
@@ -487,6 +492,7 @@ const he: Dict = {
     parse:
       'לא מצאנו נתוני DNA בקובץ. ודאו שזהו קובץ ייצוא גולמי (‎.txt או ‎.csv) מ‑23andMe, AncestryDNA או MyHeritage.',
   },
+  assocNote: 'קשר גנטי סטטיסטי — לא גזירת דין. הגנים הם רק חלק מהסיפור.',
   disclaimer:
     'Genoscope נועד לסקרנות ולמידה בלבד. זהו אינו מכשיר רפואי ואינו מספק ייעוץ רפואי, אבחון או המלצות בריאות. הגנטיקה מורכבת — סמן בודד רק לעתים רחוקות מספר את כל הסיפור.',
   footer: {

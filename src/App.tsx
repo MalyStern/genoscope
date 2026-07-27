@@ -181,6 +181,11 @@ export default function App() {
             </div>
           </div>
 
+          {hasTraits && (
+            <p className="mb-3 text-center text-xs text-[var(--color-ink-dim)]/70">
+              {t('report.shareNote')}
+            </p>
+          )}
           {shareError && (
             <p role="alert" className="mb-4 text-center text-sm text-rose-300">
               {t('report.shareError')}

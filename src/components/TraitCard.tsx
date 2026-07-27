@@ -52,6 +52,9 @@ export function TraitCard({ match, index }: { match: TraitMatch; index: number }
       <h3 className="relative mt-3 text-sm font-medium text-[var(--color-ink-dim)]">{name}</h3>
       <p className={`relative mt-0.5 text-xl font-semibold ${tone.label}`}>{label}</p>
       <p className="relative mt-2 text-sm leading-relaxed text-[var(--color-ink-dim)]">{desc}</p>
+      <p className="relative mt-1.5 text-[11px] italic text-[var(--color-ink-dim)]/60">
+        {t('assocNote')}
+      </p>
 
       <div className="relative mt-4 flex items-center justify-between border-t border-[var(--color-line)] pt-3 text-[11px] text-[var(--color-ink-dim)]/70">
         <span className="font-mono">
